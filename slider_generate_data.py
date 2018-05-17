@@ -1,3 +1,6 @@
+#slider_generate_data.py
+#Generates labeled training data for capacitive slider. Stores it in csv file
+#Arguments: LOG_FILENAME FINGER_POSITION
 import serial
 from time import sleep
 import inspect
