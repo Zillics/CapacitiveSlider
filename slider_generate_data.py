@@ -6,12 +6,13 @@ from time import sleep
 import inspect
 import numpy as np
 import sys
+import os
 #Initialize Serial port of Teensy
 ser = serial.Serial(port='/dev/ttyACM0', baudrate=9600)
 #Set max limit for number of datapoints
-n_max = 200
+n_max = 150
 #Number of samples that are used for generating a mean value of both values
-n_mean = 30
+n_mean = 20
 #Store user arguments in list
 arguments = sys.argv
 #Check whether user used correct arguments
@@ -21,15 +22,18 @@ else:
 	if(len(arguments) == 2):
 		raise ValueError("Position of finger not specified!")
 	else:
-		if(not(1 <= int(arguments[2]) <= 28)):
-			raise ValueError("Position needs to be between 1 and 28!")
+		if(not(0 <= int(arguments[2]) <= 30)):
+			raise ValueError("Position needs to be between 0 and 30!")
 #Store arguments
 filename = arguments[1]
 pos = arguments[2] #position of finger (1 - 28)
 #initialize temporary matrix for storing one set of samples
 samples = np.zeros([n_mean,2])
+# Creates directory for data files
+datadir = 'sliderData/' + filename
+os.makedirs(datadir,exist_ok=True)
 #Open file where data will be stored
-with open('sliderData/' + filename + pos,'w') as f:
+with open(datadir + '/' + filename + '_' + pos,'w') as f:
 	for i in range(0,n_max):
 		for j in range(0,n_mean):
 			#Read from Serial port and convert to string
