@@ -1,2 +1,2 @@
-*.ipynp
-__pycache__/
+*.ipynb
+**/__pycache__
