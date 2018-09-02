@@ -27,6 +27,8 @@ def main():
 	#Initialize Serial port of Teensy
 	ser = serial.Serial(port='/dev/ttyACM0', baudrate=BAUD)
 	func, params = fit_model(DATA_DIR,slider_type,model)
+	inport, outport = midi_play.midi_init('Midi Through:Midi Through Port-0 14:0','Midi Through:Midi Through Port-0 14:0')
+	midi_play.midi_note_on(outport)
 	while(True):
 		try:
 			x = read_serial(ser)
@@ -36,10 +38,12 @@ def main():
 			print("%s -> Whoops! Skipping one datapoint...." % (e))
 		if(threshold(x)):
 			pos = estimate(func,params,x)
-			norm_x = midi_play.normalize(pos)
-			lsb,msb = midi_play.split(norm_x)
-			
-			#print(msb)
+			norm_x = midi_play.to16bit(pos)
+			msb,lsb = midi_play.split(norm_x)
+			msb_7 = midi_play.to7bit(msb)
+			lsb_7 = midi_play.to7bit(lsb)
+			midi_play.pitchbend(outport,msb_7,lsb_7)
+			#print("{0:d} , {1:d} , {2:d}".format(norm_x,msb_7bit,lsb_7bit))
 			#print(norm_x)
 			#print(pos)
 
