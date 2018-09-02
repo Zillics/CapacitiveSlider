@@ -10,7 +10,7 @@ import midi_play
 DATA_DIR = 'sliderData/'
 N_MEAN = 20
 BAUD = 115200
-THRESHOLD = 5000
+THRESHOLD = 4500
 
 def main():
 	#Store user arguments in list
@@ -62,13 +62,14 @@ def readData(csv_location):
 		data = np.append(data,data_i,axis=0)
 	return data
 
-# data_dir: location of data folders, model: string
+# data_dir: location of data folders, slider_type: string, model: string
 # returns function of model + parameters
-def fit_model(data_dir,slider_type,model):
+def fit_model(slider_type,model,data_dir=DATA_DIR):
 	csv_location = DATA_DIR + str(slider_type)
 	# Import training data from csv
 	data = readData(csv_location)
-
+	if(data.shape[0] == 0):
+		raise Exception("Slider type incorrect!")
 	# Preprocess training data
 	X = data[:,1:3].transpose()
 	y = data[:,0].transpose()
